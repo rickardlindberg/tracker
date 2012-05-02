@@ -26,6 +26,7 @@ Executable tracker
     ghc-options:      -fwarn-unused-imports -Werror
   build-depends:      base >= 4 && <= 5
                ,      gtk
+               ,      cairo
 
 Test-Suite test-tracker
   type:               exitcode-stdio-1.0
@@ -35,5 +36,6 @@ Test-Suite test-tracker
     ghc-options:      -fwarn-unused-imports -Werror
   build-depends:      base >= 4 && <= 5
                ,      gtk
+               ,      cairo
 
                ,      hspec
