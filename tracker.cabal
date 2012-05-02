@@ -1,0 +1,39 @@
+Name:           tracker
+Version:        0.1
+Synopsis:       An application to track things.
+Homepage:       http://github.com/rickardlindberg/tracker
+License:        BSD3
+License-file:   LICENSE
+Author:         Rickard Lindberg
+Maintainer:     ricli85@gmail.com
+Category:       Utility
+Build-type:     Simple
+Cabal-version:  >=1.8
+Data-Files:     interface.glade
+
+Flag dev
+  Description: Enable warnings
+  Default:     False
+
+source-repository head
+  type:     git
+  location: http://github.com/rickardlindberg/tracker
+
+Executable tracker
+  main-is:            Main.hs
+  hs-source-dirs:     src
+  if flag(dev)
+    ghc-options:      -fwarn-unused-imports -Werror
+  build-depends:      base >= 4 && <= 5
+               ,      gtk
+
+Test-Suite test-tracker
+  type:               exitcode-stdio-1.0
+  main-is:            AllTests.hs
+  hs-source-dirs:     tests src
+  if flag(dev)
+    ghc-options:      -fwarn-unused-imports -Werror
+  build-depends:      base >= 4 && <= 5
+               ,      gtk
+
+               ,      hspec
