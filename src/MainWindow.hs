@@ -18,8 +18,12 @@ showMainWindow = do
     builder       <- getDataFileName "interface.glade" >>= builderFromFile
     mainWindow    <- builderGetObject builder castToWindow            "main_window"
     canvas        <- builderGetObject builder castToDrawingArea       "canvas"
+    widgetAddEvents canvas [PointerMotionMask]
     mainWindow    `onDestroy`         mainQuit
     canvas        `onExpose`          redraw canvas trackingRef
+    canvas        `on`                motionNotifyEvent $ tryEvent $ do
+                                          (x, y) <- eventCoordinates
+                                          liftIO $ print (x, y)
     widgetShowAll mainWindow
 
 builderFromFile :: FilePath -> IO Builder
