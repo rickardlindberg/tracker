@@ -8,21 +8,28 @@ import Graphics.UI.Gtk
 import Rect
 import Tracking
 
-initDiagram canvas getTrackings = do
-    mousePosRef <- newIORef (0, 0)
-    let forceRedraw = postGUIAsync $ widgetQueueDraw canvas
+initDiagramComponent :: DrawingArea -> IO Tracking -> IO ()
+initDiagramComponent canvas readTrackings = do
+    (readMousePos, writeMousePos) <- createRef (0, 0)
     widgetAddEvents canvas [PointerMotionMask]
-    canvas        `onExpose`          redraw canvas getTrackings mousePosRef
-    canvas        `on`                motionNotifyEvent $ tryEvent $ do
-                                          (x, y) <- eventCoordinates
-                                          liftIO $ writeIORef mousePosRef (x, y) >> forceRedraw
+    canvas `onExpose` redraw readTrackings readMousePos canvas
+    canvas `on`       motionNotifyEvent $ tryEvent $ do
+                          mousePos <- eventCoordinates
+                          liftIO $ do
+                              writeMousePos mousePos
+                              postGUIAsync $ widgetQueueDraw canvas
+    return ()
 
-redraw canvas getTrackings mousePosRef event = do
-    (w, h) <- widgetGetSize canvas
-    drawin <- widgetGetDrawWindow canvas
-    tracking <- getTrackings
-    mousePos <- readIORef mousePosRef
-    renderWithDrawable drawin (renderScreen tracking mousePos (fromIntegral w) (fromIntegral h))
+createRef :: a -> IO (IO a, a -> IO ())
+createRef value = newIORef value >>= \ref -> return (readIORef ref, writeIORef ref)
+
+redraw readTrackings readMousePos canvas event = do
+    tracking   <- readTrackings
+    mousePos   <- readMousePos
+    (w, h)     <- widgetGetSize canvas
+    let render =  renderScreen tracking mousePos (fromIntegral w) (fromIntegral h)
+    drawing    <- widgetGetDrawWindow canvas
+    renderWithDrawable drawing render
     return True
 
 renderScreen :: Tracking -> (Double, Double) -> Double -> Double -> Render ()

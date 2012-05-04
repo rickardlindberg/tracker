@@ -23,7 +23,7 @@ showMainWindow = do
                                                , TrackingEntry 4 2 ""
                                                , TrackingEntry 5 1.5 ""
                                                ]
-    initDiagram canvas (readIORef trackingRef)
+    initDiagramComponent canvas (readIORef trackingRef)
     widgetShowAll mainWindow
     windowResize mainWindow 500 300
     return ()

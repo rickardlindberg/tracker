@@ -18,7 +18,7 @@ showMainWindow = do
     mainWindow    <- builderGetObject builder castToWindow            "main_window"
     canvas        <- builderGetObject builder castToDrawingArea       "canvas"
     mainWindow    `onDestroy`         mainQuit
-    initDiagram canvas (readIORef trackingRef)
+    initDiagramComponent canvas (readIORef trackingRef)
     widgetShowAll mainWindow
 
 builderFromFile :: FilePath -> IO Builder
