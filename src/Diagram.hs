@@ -48,12 +48,8 @@ renderScreen tracking mousePos w h = do
     stroke
 
     -- Data points
-    let vMinTime  = fromIntegral $ minTime tracking
-    let vMaxTime  = fromIntegral $ maxTime tracking
-    let vMinValue = minValue tracking
-    let vMaxValue = maxValue tracking
-    let toX time  = ox + tw * (fromIntegral time - vMinTime)  / (vMaxTime  - vMinTime)
-    let toY value = oy - th * (value             - vMinValue) / (vMaxValue - vMinValue)
+    let toX time  = ox + tw * timePercent tracking time
+    let toY value = oy - th * valuePercent tracking value
     let points = map (\entry -> (entry, toX $ time entry, toY $ value entry)) (entries tracking)
     let closest = findClosestEntry points mousePos
     -- Line between points
@@ -76,7 +72,6 @@ renderScreen tracking mousePos w h = do
             moveTo 20 20
             setSourceRGB 0 0 0
             showText (show entry)
-
 
 findClosestEntry :: [(TrackingEntry, Double, Double)] -> (Double, Double) -> TrackingEntry
 findClosestEntry points (mx, my) = fst $ myMin $ map (\(e, x, y) -> (e, dist (mx, my) (x, y))) points

@@ -11,14 +11,14 @@ data TrackingEntry = TrackingEntry
     , comment :: String
     } deriving (Show, Eq)
 
-minTime :: Tracking -> Int
-minTime t = minimum $ map time (entries t)
+timePercent :: Tracking -> Int -> Double
+timePercent tracking t = (fromIntegral t - min)  / (max - min)
+    where
+        max = fromIntegral $ maximum $ map time (entries tracking)
+        min = fromIntegral $ minimum $ map time (entries tracking)
 
-maxTime :: Tracking -> Int
-maxTime t = maximum $ map time (entries t)
-
-minValue :: Tracking -> Double
-minValue t = minimum $ map value (entries t)
-
-maxValue :: Tracking -> Double
-maxValue t = maximum $ map value (entries t)
+valuePercent :: Tracking -> Double -> Double
+valuePercent tracking v = (v - min)  / (max - min)
+    where
+        max = maximum $ map value (entries tracking)
+        min = minimum $ map value (entries tracking)
