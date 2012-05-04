@@ -1,22 +1,21 @@
 module Diagram where
 
 import Control.Monad
-import Data.IORef
 import Graphics.Rendering.Cairo hiding (status, Status)
 import Graphics.UI.Gtk
 import Tracking
 
-initDiagram canvas trackingRef = do
+initDiagram canvas getTrackings = do
     widgetAddEvents canvas [PointerMotionMask]
-    canvas        `onExpose`          redraw canvas trackingRef
+    canvas        `onExpose`          redraw canvas getTrackings
     canvas        `on`                motionNotifyEvent $ tryEvent $ do
                                           (x, y) <- eventCoordinates
                                           liftIO $ print (x, y)
 
-redraw canvas trackingRef event = do
+redraw canvas getTrackings event = do
     (w, h) <- widgetGetSize canvas
     drawin <- widgetGetDrawWindow canvas
-    tracking <- readIORef trackingRef
+    tracking <- getTrackings
     renderWithDrawable drawin (renderScreen tracking (fromIntegral w) (fromIntegral h))
     return True
 
