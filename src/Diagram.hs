@@ -5,6 +5,7 @@ import Data.IORef
 import GHC.Exts
 import Graphics.Rendering.Cairo hiding (status, Status)
 import Graphics.UI.Gtk
+import Rect
 import Tracking
 
 initDiagram canvas getTrackings = do
@@ -69,9 +70,27 @@ renderScreen tracking mousePos w h = do
             arc px py (r + 2) 0 (2*pi)
             stroke
             -- Coord text
-            moveTo 20 20
+            let text = show entry
+            ex <- textExtents text
+            let tw = textExtentsWidth ex
+            let th = textExtentsHeight ex
+            let innerBorder = 5
+            let ydiff = th * 2 * if py > h/2 then (-1) else 1
+            bubble (expand innerBorder $ move (-tw/2) (-th/2+ydiff) $ Rect px py tw th) px py
+            moveTo (px - textExtentsXbearing ex - tw/2) (py - textExtentsYbearing ex + ydiff - innerBorder)
             setSourceRGB 0 0 0
-            showText (show entry)
+            showText text
+
+bubble :: Rect -> Double -> Double -> Render ()
+bubble (Rect x y w h) px py = do
+    rectangle x y w h
+    setSourceRGBA 1 1 1 0.8
+    fill
+
+    rectangle x y w h
+    setSourceRGBA 0 0 0 0.4
+    setLineWidth 1
+    stroke
 
 findClosestEntry :: [(TrackingEntry, Double, Double)] -> (Double, Double) -> TrackingEntry
 findClosestEntry points (mx, my) = fst $ myMin $ map (\(e, x, y) -> (e, dist (mx, my) (x, y))) points
