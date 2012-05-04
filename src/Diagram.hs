@@ -89,11 +89,30 @@ renderScreen tracking mousePos w h = do
 
 bubble :: Rect -> Double -> Double -> Render ()
 bubble (Rect x y w h) px py = do
-    rectangle x y w h
+    let boxRadius = 5
+    let bubblePath = do
+        newPath
+        when (py < y) $ do
+            lineTo (x+w/2-boxRadius) y
+            lineTo (x+w/2) py
+            lineTo (x+w/2+boxRadius) y
+            return ()
+        arc (x+w-boxRadius) (y+  boxRadius) boxRadius ((-90) * pi/180) (0   * pi/180)
+        arc (x+w-boxRadius) (y+h-boxRadius) boxRadius (0     * pi/180) (90  * pi/180)
+        when (py > y) $ do
+            lineTo (x+w/2+boxRadius) (y+h)
+            lineTo (x+w/2) py
+            lineTo (x+w/2-boxRadius) (y+h)
+            return ()
+        arc (x+  boxRadius) (y+h-boxRadius) boxRadius (90    * pi/180) (180 * pi/180)
+        arc (x+  boxRadius) (y+  boxRadius) boxRadius (180   * pi/180) (270 * pi/180)
+        closePath
+    -- Background
+    bubblePath
     setSourceRGBA 1 1 1 0.8
     fill
-
-    rectangle x y w h
+    -- Border
+    bubblePath
     setSourceRGBA 0 0 0 0.4
     setLineWidth 1
     stroke
