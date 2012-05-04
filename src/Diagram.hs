@@ -35,9 +35,8 @@ redraw readTrackings readMousePos canvas event = do
 renderScreen :: Tracking -> (Double, Double) -> Double -> Double -> Render ()
 renderScreen tracking mousePos w h = do
     let border = 20
-    let (ox, oy) = (border, h - border)
-    let tw = w - 2 * border
-    let th = h - 2 * border
+    let (Rect ox y tw th) = shrink border (Rect 0 0 w h)
+    let oy = y + th
 
     -- Background
     setSourceRGB 1 1 0.6
