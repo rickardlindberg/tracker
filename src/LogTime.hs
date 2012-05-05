@@ -38,5 +38,9 @@ parseLogTime = wrap . readTime defaultTimeLocale format
 
 logTimePercent :: LogTime -> LogTime -> LogTime -> Double
 logTimePercent min max t =
-    realToFrac $ (extract t   `diffUTCTime` extract min) /
-                 (extract max `diffUTCTime` extract min)
+    if (extract max `diffUTCTime` extract min) == 0
+        then
+            0
+        else
+            realToFrac $ (extract t   `diffUTCTime` extract min) /
+                         (extract max `diffUTCTime` extract min)

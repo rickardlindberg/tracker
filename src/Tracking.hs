@@ -20,7 +20,7 @@ timePercent tracking t = logTimePercent min max t
         min = minimum $ map time (entries tracking)
 
 valuePercent :: Tracking -> Double -> Double
-valuePercent tracking v = (v - min)  / (max - min)
+valuePercent tracking v = if (max - min) == 0 then 1 else (v - min)  / (max - min)
     where
         max = maximum $ map value (entries tracking)
         min = minimum $ map value (entries tracking)
