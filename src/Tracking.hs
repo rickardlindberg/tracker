@@ -1,6 +1,5 @@
 module Tracking where
 
-import Data.Time
 import LogTime
 
 data Tracking = Tracking
@@ -9,12 +8,12 @@ data Tracking = Tracking
     } deriving (Show, Eq)
 
 data TrackingEntry = TrackingEntry
-    { time    :: UTCTime
+    { time    :: LogTime
     , value   :: Double
     , comment :: String
     } deriving (Show, Eq)
 
-timePercent :: Tracking -> UTCTime -> Double
+timePercent :: Tracking -> LogTime -> Double
 timePercent tracking t = logTimePercent min max t
     where
         max = maximum $ map time (entries tracking)

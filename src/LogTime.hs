@@ -1,5 +1,6 @@
 module LogTime
-    ( getCurrentLogTime
+    ( LogTime()
+    , getCurrentLogTime
     , parseLogTime
     , formatLogTime
     , logTimePercent
@@ -8,11 +9,17 @@ module LogTime
 import Data.Time
 import System.Locale
 
-getCurrentLogTime :: IO UTCTime
-getCurrentLogTime = fmap (truncToMinutePrecision . localTimeToUTC utc) getCurrentLocalTime
+newtype LogTime = LogTime UTCTime deriving (Eq, Ord)
+extract (LogTime t) = t
+wrap = LogTime
+instance Show LogTime where
+    show = formatLogTime
+
+getCurrentLogTime :: IO LogTime
+getCurrentLogTime = fmap (wrap . truncToMinutePrecision . localTimeToUTC utc) getCurrentLocalTime
 
 truncToMinutePrecision :: UTCTime -> UTCTime
-truncToMinutePrecision = parseLogTime . formatLogTime
+truncToMinutePrecision = extract . parseLogTime . formatLogTime . wrap
 
 getCurrentLocalTime :: IO LocalTime
 getCurrentLocalTime = do
@@ -23,11 +30,13 @@ getCurrentLocalTime = do
 format :: String
 format = "%Y-%m-%d %H:%M"
 
-formatLogTime :: UTCTime -> String
-formatLogTime = formatTime defaultTimeLocale format
+formatLogTime :: LogTime -> String
+formatLogTime = formatTime defaultTimeLocale format . extract
 
-parseLogTime :: String -> UTCTime
-parseLogTime = readTime defaultTimeLocale format
+parseLogTime :: String -> LogTime
+parseLogTime = wrap . readTime defaultTimeLocale format
 
-logTimePercent :: UTCTime -> UTCTime -> UTCTime -> Double
-logTimePercent min max t = realToFrac $ (t `diffUTCTime` min)  / (max `diffUTCTime` min)
+logTimePercent :: LogTime -> LogTime -> LogTime -> Double
+logTimePercent min max t =
+    realToFrac $ (extract t   `diffUTCTime` extract min) /
+                 (extract max `diffUTCTime` extract min)
