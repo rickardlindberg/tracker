@@ -17,11 +17,12 @@ showMainWindow = do
     canvas <- drawingAreaNew
     set mainWindow [ windowTitle := "Diagram Test App", containerChild := canvas ]
     mainWindow    `onDestroy`         mainQuit
-    trackingRef   <- newIORef $ Tracking "foo" [ TrackingEntry 1 1 ""
-                                               , TrackingEntry 2 2 ""
-                                               , TrackingEntry 3 1 ""
-                                               , TrackingEntry 4 2 ""
-                                               , TrackingEntry 5 1.5 ""
+    t <- myCurrentTime
+    trackingRef   <- newIORef $ Tracking "foo" [ TrackingEntry (myParseTime "2012-05-05 00:00") 1 ""
+                                               , TrackingEntry (myParseTime "2012-05-05 01:00") 2 ""
+                                               , TrackingEntry (myParseTime "2012-05-05 02:00") 1 ""
+                                               , TrackingEntry (myParseTime "2012-05-05 03:00") 2 ""
+                                               , TrackingEntry t 1.5 ""
                                                ]
     initDiagramComponent canvas (readIORef trackingRef)
     widgetShowAll mainWindow

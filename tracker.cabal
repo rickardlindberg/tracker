@@ -27,6 +27,8 @@ Executable tracker
   build-depends:      base >= 4 && <= 5
                ,      gtk
                ,      cairo
+               ,      time
+               ,      old-locale
 
 Test-Suite test-tracker
   type:               exitcode-stdio-1.0
@@ -37,5 +39,8 @@ Test-Suite test-tracker
   build-depends:      base >= 4 && <= 5
                ,      gtk
                ,      cairo
+               ,      time
+               ,      old-locale
 
                ,      hspec
+               ,      HUnit

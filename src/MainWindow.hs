@@ -8,12 +8,7 @@ import Tracking
 
 showMainWindow :: IO ()
 showMainWindow = do
-    trackingRef   <- newIORef $ Tracking "foo" [ TrackingEntry 1 1 ""
-                                               , TrackingEntry 2 2 ""
-                                               , TrackingEntry 3 1 ""
-                                               , TrackingEntry 4 2 ""
-                                               , TrackingEntry 5 1.5 ""
-                                               ]
+    trackingRef   <- newIORef $ Tracking "foo" []
     builder       <- getDataFileName "interface.glade" >>= builderFromFile
     mainWindow    <- builderGetObject builder castToWindow            "main_window"
     canvas        <- builderGetObject builder castToDrawingArea       "canvas"
