@@ -1,10 +1,9 @@
 #!/bin/sh
 # Xephyr :1 -screen 500x300 &
-name="diagram-test-app"
+name="DiagramTestApp"
 dest="dist/build/$name"
-if [ ! -d $dest ]; then
-    mkdir $dest
-fi
+export DISPLAY=:1
+mkdir -p $dest
 ps aux | grep "[d]ist/build/$name" | awk '{print $2}' | xargs kill
-ghc --make -isrc -outputdir $dest/$name-tmp tests/DiagramTestApp.hs -o $dest/$name &&
-(DISPLAY=:1 ./$dest/$name &)
+ghc --make -isrc -outputdir $dest/$name-tmp tests/$name.hs -o $dest/$name &&
+(./$dest/$name &)
