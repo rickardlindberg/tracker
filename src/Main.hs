@@ -1,10 +1,11 @@
 module Main (main) where
 
-import Graphics.UI.Gtk
-import MainWindow
+import GUI
+import System.Environment
 
 main :: IO ()
 main = do
-    initGUI
-    showMainWindow
-    mainGUI
+    args <- getArgs
+    case args of
+        [trackingPath] -> guiMain trackingPath
+        _              -> putStrLn "usage: tracking path-to-tracking"
