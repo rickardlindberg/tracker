@@ -1,4 +1,4 @@
-module LogEntryDialog where
+module GUI.LogEntryDialog where
 
 import Control.Monad
 import Data.IORef

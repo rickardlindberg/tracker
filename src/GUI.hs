@@ -1,7 +1,7 @@
 module GUI where
 
 import Graphics.UI.Gtk
-import MainWindow
+import GUI.MainWindow
 
 guiMain :: FilePath -> IO ()
 guiMain trackingPath = do

@@ -1,4 +1,4 @@
-module Diagram where
+module GUI.Diagram where
 
 import Control.Monad
 import Data.IORef

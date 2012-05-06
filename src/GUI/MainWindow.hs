@@ -1,9 +1,9 @@
-module MainWindow (showMainWindow) where
+module GUI.MainWindow (showMainWindow) where
 
 import Data.IORef
-import Diagram
 import Graphics.UI.Gtk
-import LogEntryDialog
+import GUI.Diagram
+import GUI.LogEntryDialog
 import Paths_tracker
 import Tracking
 

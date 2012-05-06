@@ -1,7 +1,7 @@
 import Data.IORef
 import Data.Time.Clock
-import Diagram
 import Graphics.UI.Gtk
+import GUI.Diagram
 import LogTime
 import System
 import Tracking
