@@ -2,10 +2,10 @@ module GUI.Diagram where
 
 import Control.Monad
 import Data.IORef
+import Geometry.Rect
 import GHC.Exts
 import Graphics.Rendering.Cairo hiding (status, Status)
 import Graphics.UI.Gtk
-import Rect
 import Tracking
 
 initDiagramComponent :: DrawingArea -> IO Tracking -> IO ()

@@ -1,4 +1,4 @@
-module Rect where
+module Geometry.Rect where
 
 data Rect = Rect Double Double Double Double
 
