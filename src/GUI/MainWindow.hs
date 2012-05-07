@@ -5,11 +5,12 @@ import Graphics.UI.Gtk
 import GUI.Diagram
 import GUI.LogEntryDialog
 import Paths_tracker
-import Tracking
+import Tracking()
+import Tracking.Persistence
 
 showMainWindow :: FilePath -> IO ()
 showMainWindow trackingPath = do
-    tracking      <- fmap parseTracking (readFile trackingPath)
+    tracking      <- trackingFromFile trackingPath
     trackingRef   <- newIORef tracking
     builder       <- getDataFileName "interface.glade" >>= builderFromFile
     mainWindow    <- builderGetObject builder castToWindow            "main_window"

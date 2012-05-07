@@ -29,24 +29,3 @@ valuePercent tracking v = if (max - min) == 0 then 1 else (v - min)  / (max - mi
     where
         max = maximum $ map value (entries tracking)
         min = minimum $ map value (entries tracking)
-
-formatTracking :: Tracking -> String
-formatTracking t = header ++ rest
-    where
-        header  = name t ++ "\n"
-        rest    = concat $ concatMap entry (entries t)
-        entry e = (formatLogTime (time e) ++ " -> " ++ show (value e) ++ "\n") : xxx (comment e)
-        xxx     = map (\e -> "  " ++ e ++ "\n") . lines
-
-parseTracking :: String -> Tracking
-parseTracking str =
-    let (header:rest)   = lines str
-        toPairs [] = []
-        toPairs (x:y:r) = (x, y):toPairs r
-        entries         = map foo (toPairs rest)
-        foo (x, y)      = let [d,t,"->",v] = words x
-                              (' ':' ':comment) = y
-                              time = parseLogTime (d ++ " " ++ t)
-                              value = read v
-                          in TrackingEntry time value comment
-    in Tracking header entries

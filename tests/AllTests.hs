@@ -3,6 +3,7 @@ import Test.Hspec.HUnit()
 import Test.Hspec.Monadic
 import Test.HUnit
 import Tracking
+import Tracking.Persistence
 
 main = hspecX $ do
 
