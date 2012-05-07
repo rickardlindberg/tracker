@@ -7,9 +7,10 @@ import GUI.LogEntryDialog
 import Paths_tracker
 import Tracking
 
-showMainWindow :: IO ()
-showMainWindow = do
-    trackingRef   <- newIORef $ Tracking "foo" []
+showMainWindow :: FilePath -> IO ()
+showMainWindow trackingPath = do
+    tracking      <- fmap parseTracking (readFile trackingPath)
+    trackingRef   <- newIORef tracking
     builder       <- getDataFileName "interface.glade" >>= builderFromFile
     mainWindow    <- builderGetObject builder castToWindow            "main_window"
     canvas        <- builderGetObject builder castToDrawingArea       "canvas"

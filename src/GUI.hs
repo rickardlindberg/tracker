@@ -6,5 +6,5 @@ import GUI.MainWindow
 guiMain :: FilePath -> IO ()
 guiMain trackingPath = do
     initGUI
-    showMainWindow
+    showMainWindow trackingPath
     mainGUI
