@@ -13,10 +13,10 @@ data TrackingEntry = TrackingEntry
     , comment :: String
     } deriving (Show, Eq)
 
-addLog :: Tracking -> LogTime -> Double -> String -> Tracking
-addLog tracking time value comment = tracking { entries = newEntries }
+addLog :: Tracking -> TrackingEntry -> Tracking
+addLog tracking entry = tracking { entries = newEntries }
     where
-        newEntries = TrackingEntry time value comment : entries tracking
+        newEntries = entry : entries tracking
 
 timePercent :: Tracking -> LogTime -> Double
 timePercent tracking t = logTimePercent min max t

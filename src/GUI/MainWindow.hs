@@ -18,8 +18,8 @@ showMainWindow trackingPath = do
     mainWindow    `onDestroy`         mainQuit
     initDiagramComponent canvas (readIORef trackingRef)
 
-    let saveLog time value comment = do
-        modifyIORef trackingRef (\t -> addLog t time value comment)
+    let saveLog entry = do
+        modifyIORef trackingRef (`addLog` entry)
         tracking <- readIORef trackingRef
         trackingToFile trackingPath tracking
 
