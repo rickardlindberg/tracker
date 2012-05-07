@@ -6,6 +6,9 @@ import Tracking
 trackingFromFile :: FilePath -> IO Tracking
 trackingFromFile = fmap parseTracking . readFile
 
+trackingToFile :: FilePath -> Tracking -> IO ()
+trackingToFile path = writeFile path . formatTracking
+
 formatTracking :: Tracking -> String
 formatTracking t = header ++ rest
     where

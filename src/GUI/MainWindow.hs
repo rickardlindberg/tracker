@@ -5,7 +5,7 @@ import Graphics.UI.Gtk
 import GUI.Diagram
 import GUI.LogEntryDialog
 import Paths_tracker
-import Tracking()
+import Tracking
 import Tracking.Persistence
 
 showMainWindow :: FilePath -> IO ()
@@ -18,6 +18,11 @@ showMainWindow trackingPath = do
     mainWindow    `onDestroy`         mainQuit
     initDiagramComponent canvas (readIORef trackingRef)
 
+    let saveLog time value comment = do
+        modifyIORef trackingRef (\t -> addLog t time value comment)
+        tracking <- readIORef trackingRef
+        trackingToFile trackingPath tracking
+
     d <- builderGetObject builder castToDialog "logEntryDialog"
     v <- builderGetObject builder castToEntry "logEntryValue"
     c <- builderGetObject builder castToEntry "logEntryComment"
@@ -25,7 +30,7 @@ showMainWindow trackingPath = do
                                                            , valueSpin = v
                                                            , commentEntry = c
                                                            }
-                                            trackingRef
+                                            saveLog
 
     addEntryButton <- builderGetObject builder castToButton "addEntryButton"
     addEntryButton `onClicked` runLogEntryDialog
