@@ -1,6 +1,8 @@
+import Fixtures()
 import LogTime
 import Test.Hspec.HUnit()
 import Test.Hspec.Monadic
+import Test.Hspec.QuickCheck
 import Test.HUnit
 import Tracking
 import Tracking.Persistence
@@ -29,3 +31,6 @@ main = hspecX $ do
                                             "  a comment\n")
             in parseTracking str @?= Tracking "name here" [ TrackingEntry (parseLogTime "2012-05-05 18:00") 12.0 "a comment"
                                      ]
+
+        prop "roundtrip returns the same" $
+            \tracking -> parseTracking (formatTracking tracking) == tracking

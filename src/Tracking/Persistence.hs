@@ -15,7 +15,7 @@ formatTracking t = header ++ rest
         header  = name t ++ "\n"
         rest    = concat $ concatMap entry (entries t)
         entry e = (formatLogTime (time e) ++ " -> " ++ show (value e) ++ "\n") : xxx (comment e)
-        xxx     = map (\e -> "  " ++ e ++ "\n") . lines
+        xxx x   = ["  " ++ x ++ "\n"]
 
 parseTracking :: String -> Tracking
 parseTracking str =

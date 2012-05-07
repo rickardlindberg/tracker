@@ -29,6 +29,7 @@ Executable tracker
                ,      cairo
                ,      time
                ,      old-locale
+               ,      QuickCheck
 
 Test-Suite test-tracker
   type:               exitcode-stdio-1.0
@@ -41,6 +42,7 @@ Test-Suite test-tracker
                ,      cairo
                ,      time
                ,      old-locale
+               ,      QuickCheck
 
                ,      hspec
                ,      HUnit
