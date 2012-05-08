@@ -71,21 +71,58 @@ renderScreen tracking mousePos w h = do
         let r = 3
         arc px py r 0 (2*pi)
         fill
+        -- Extra focus ring
+        arc px py (r + 2) 0 (2*pi)
+        stroke
         -- Balloon
-        when (entry == closest) $ do
-            arc px py (r + 2) 0 (2*pi)
-            stroke
-            -- Coord text
-            let text = show entry
-            ex <- textExtents text
-            let tw = textExtentsWidth ex
-            let th = textExtentsHeight ex
-            let innerBorder = 5
-            let ydiff = th * 2 * if py > h/2 then (-1) else 1
-            bubble (expand innerBorder $ move (-tw/2) (-th/2+ydiff) $ Rect px py tw th) px py
-            moveTo (px - textExtentsXbearing ex - tw/2) (py - textExtentsYbearing ex + ydiff - innerBorder)
-            setSourceRGB 0 0 0
-            showText text
+        when (entry == closest) (renderBalloon [show $ time entry, show $ value entry, comment entry] w h px py)
+
+renderBalloon :: [String] -> Double -> Double -> Double -> Double -> Render ()
+renderBalloon text w h px py = do
+    let innerBorder       = 5
+    let bubbleBorderSpace = 5
+    let arrowHeight       = 15
+    -- Coord text
+    (tw, th) <- textBounds text
+    let ydiff = (th/2 + arrowHeight) * if py > h/2 then (-1) else 1
+
+    let bubbleIdealInner = move 0 ydiff $ move (-tw/2) (-th/2) $ Rect px py tw th
+    let bubbleOuter = shrink bubbleBorderSpace $ ensureTopLeftVisible w h $ expand (innerBorder+bubbleBorderSpace) bubbleIdealInner
+    let bubbleInner = shrink innerBorder bubbleOuter
+
+    bubble bubbleOuter px py
+    poss <- textPositions text bubbleInner
+    setSourceRGB 0 0 0
+    forM_ poss $ \(line, x, y) -> do
+        moveTo x y
+        showText line
+
+ensureTopLeftVisible :: Double -> Double -> Rect -> Rect
+ensureTopLeftVisible tw th rect@(Rect x y w h) = move dx dy rect
+    where
+        dx  | x < 0      = -x
+            | (x+w) > tw = tw-(x+w)
+            | otherwise  = 0
+        dy  | y < 0      = -y
+            | (y+h) > th = th-(y+h)
+            | otherwise  = 0
+
+textBounds :: [String] -> Render (Double, Double)
+textBounds text = do
+    extents     <- mapM textExtents text
+    let widths  =  map textExtentsWidth  extents
+    let heights =  map textExtentsHeight extents
+    return (maximum widths, (maximum heights + 2) * fromIntegral (length text))
+
+textPositions :: [String] -> Rect -> Render [(String, Double, Double)]
+textPositions text (Rect x y w h) = do
+    let deltaY = h / fromIntegral (length text)
+    let indices = [0..(length text - 1)]
+    forM (zip text indices) $ \(line, i) -> do
+        extent <- textExtents line
+        return (line,
+                x - textExtentsXbearing extent,
+                y - textExtentsYbearing extent + deltaY * fromIntegral i)
 
 bubble :: Rect -> Double -> Double -> Render ()
 bubble (Rect x y w h) px py = do
@@ -93,16 +130,16 @@ bubble (Rect x y w h) px py = do
     let bubblePath = do
         newPath
         when (py < y) $ do
-            lineTo (x+w/2-boxRadius) y
-            lineTo (x+w/2) py
-            lineTo (x+w/2+boxRadius) y
+            lineTo (px-boxRadius) y
+            lineTo px py
+            lineTo (px+boxRadius) y
             return ()
         arc (x+w-boxRadius) (y+  boxRadius) boxRadius ((-90) * pi/180) (0   * pi/180)
         arc (x+w-boxRadius) (y+h-boxRadius) boxRadius (0     * pi/180) (90  * pi/180)
         when (py > y) $ do
-            lineTo (x+w/2+boxRadius) (y+h)
-            lineTo (x+w/2) py
-            lineTo (x+w/2-boxRadius) (y+h)
+            lineTo (px+boxRadius) (y+h)
+            lineTo px py
+            lineTo (px-boxRadius) (y+h)
             return ()
         arc (x+  boxRadius) (y+h-boxRadius) boxRadius (90    * pi/180) (180 * pi/180)
         arc (x+  boxRadius) (y+  boxRadius) boxRadius (180   * pi/180) (270 * pi/180)
