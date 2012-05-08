@@ -14,6 +14,7 @@ data LogEntryDialog = LogEntryDialog
 initLogEntryDialog :: LogEntryDialog -> (TrackingEntry -> IO ()) -> IO (IO ())
 initLogEntryDialog x saveLog = do
     let runDialog = do
+        beforeDialogOpened x
         response <- dialogRun (dialog x)
         when (response == ResponseOk) $ do
             time    <- getCurrentLogTime
@@ -22,3 +23,9 @@ initLogEntryDialog x saveLog = do
             saveLog (TrackingEntry time value comment)
         widgetHide (dialog x)
     return runDialog
+
+beforeDialogOpened :: LogEntryDialog -> IO ()
+beforeDialogOpened x = do
+    entrySetText (valueSpin x) ""
+    entrySetText (commentEntry x) ""
+    widgetGrabFocus (valueSpin x)
