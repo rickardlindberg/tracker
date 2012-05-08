@@ -71,11 +71,12 @@ renderScreen tracking mousePos w h = do
         let r = 3
         arc px py r 0 (2*pi)
         fill
-        -- Extra focus ring
-        arc px py (r + 2) 0 (2*pi)
-        stroke
-        -- Balloon
-        when (entry == closest) (renderBalloon [show $ time entry, show $ value entry, comment entry] w h px py)
+        when (entry == closest) $ do
+            -- Extra focus ring
+            arc px py (r + 2) 0 (2*pi)
+            stroke
+            -- Balloon
+            renderBalloon [show $ time entry, show $ value entry, comment entry] w h px py
 
 renderBalloon :: [String] -> Double -> Double -> Double -> Double -> Render ()
 renderBalloon text w h px py = do
