@@ -15,18 +15,29 @@ main = hspecX $ do
             let t = parseLogTime "2012-05-05 18:00"
             in parseLogTime (formatLogTime t) @?= t
 
-    describe "logs" $ do
+    describe "persistence of trackings" $ do
 
-        it "can be converted to strings" $
-            let entries  = [ TrackingEntry (parseLogTime "2012-05-05 18:00") 12.0 "a comment"
-                           ]
-                tracking = Tracking "name here" entries
-            in formatTracking tracking @?= "name here\n2012-05-05 18:00 | 12.0 | a comment\n"
+        it "can be converted to string" $
+            formatTracking (Tracking "name here"
+                [ TrackingEntry (parseLogTime "2012-05-05 18:00") 12.0 "a comment"
+                ]
+            )
+            @?=
+            (
+                   "name here\n"
+                ++ "2012-05-05 18:00 | 12.0 | a comment\n"
+            )
 
-        it "can be read from strings" $
-            let str  = "name here\n2012-05-05 18:00 | 12.0 | a comment\n"
-            in parseTracking str @?= Tracking "name here" [ TrackingEntry (parseLogTime "2012-05-05 18:00") 12.0 "a comment"
-                                     ]
+        it "can be read from string" $
+            parseTracking (
+                   "name here\n"
+                ++ "2012-05-05 18:00 | 12.0 | a comment\n"
+            )
+            @?=
+            Just (Tracking "name here"
+                [ TrackingEntry (parseLogTime "2012-05-05 18:00") 12.0 "a comment"
+                ]
+            )
 
         prop "roundtrip returns the same" $
-            \tracking -> parseTracking (formatTracking tracking) == tracking
+            \tracking -> parseTracking (formatTracking tracking) == Just tracking

@@ -10,7 +10,7 @@ import Tracking.Persistence
 
 showMainWindow :: FilePath -> IO ()
 showMainWindow trackingPath = do
-    tracking      <- trackingFromFile trackingPath
+    Just tracking <- trackingFromFile trackingPath
     trackingRef   <- newIORef tracking
     builder       <- getDataFileName "interface.glade" >>= builderFromFile
     mainWindow    <- builderGetObject builder castToWindow            "main_window"

@@ -4,24 +4,26 @@ import LogTime
 import Text.ParserCombinators.Parsec
 import Tracking
 
-trackingFromFile :: FilePath -> IO Tracking
+trackingFromFile :: FilePath -> IO (Maybe Tracking)
 trackingFromFile = fmap parseTracking . readFile
 
 trackingToFile :: FilePath -> Tracking -> IO ()
 trackingToFile path = writeFile path . formatTracking
 
 formatTracking :: Tracking -> String
-formatTracking t = header ++ logs
+formatTracking t = fHeader ++ fLogs
     where
-        header  = name t ++ "\n"
-        logs    = concatMap entry (entries t)
-        entry e = formatLogTime (time e) ++ " | " ++ show (value e) ++ " | " ++ comment e ++ "\n"
+        fHeader  = name t ++ newline
+        fLogs    = concatMap fEntry (entries t)
+        fEntry e = formatLogTime (time e) ++ sep ++ show (value e) ++ sep ++ comment e ++ newline
+        sep      = " | "
+        newline  = "\n"
 
-parseTracking :: String -> Tracking
+parseTracking :: String -> Maybe Tracking
 parseTracking str =
     case parse file "" str of
-        Left  _ -> error "baaaah"
-        Right x -> x
+        Left  _ -> Nothing
+        Right x -> Just x
     where
         file = do
             header <- restOfLine
