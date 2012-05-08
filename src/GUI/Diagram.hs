@@ -67,10 +67,12 @@ renderScreen tracking mousePos w h = do
     stroke
     -- Points
     setSourceRGB 0 0 0
+    let r = 3
     forM_ points $ \(entry, px, py) -> do
-        let r = 3
         arc px py r 0 (2*pi)
         fill
+    -- Highlight
+    forM_ points $ \(entry, px, py) ->
         when (entry == closest) $ do
             -- Extra focus ring
             arc px py (r + 2) 0 (2*pi)
