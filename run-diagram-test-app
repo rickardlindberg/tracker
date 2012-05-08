@@ -1,5 +1,5 @@
 #!/bin/sh
-# Xephyr :1 -screen 500x300 &
+# Xephyr :1 -screen 500x300 > /dev/null 2>&1 &
 name="DiagramTestApp"
 dest="dist/build/$name"
 export DISPLAY=:1
