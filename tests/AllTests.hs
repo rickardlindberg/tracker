@@ -21,14 +21,10 @@ main = hspecX $ do
             let entries  = [ TrackingEntry (parseLogTime "2012-05-05 18:00") 12.0 "a comment"
                            ]
                 tracking = Tracking "name here" entries
-            in formatTracking tracking @?= ("name here\n" ++
-                                            "2012-05-05 18:00 -> 12.0\n" ++
-                                            "  a comment\n")
+            in formatTracking tracking @?= "name here\n2012-05-05 18:00 | 12.0 | a comment\n"
 
         it "can be read from strings" $
-            let str  = ("name here\n" ++
-                                            "2012-05-05 18:00 -> 12.0\n" ++
-                                            "  a comment\n")
+            let str  = "name here\n2012-05-05 18:00 | 12.0 | a comment\n"
             in parseTracking str @?= Tracking "name here" [ TrackingEntry (parseLogTime "2012-05-05 18:00") 12.0 "a comment"
                                      ]
 
