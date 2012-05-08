@@ -1,5 +1,6 @@
 module Tracking where
 
+import GHC.Exts
 import LogTime
 
 data Tracking = Tracking
@@ -12,6 +13,9 @@ data TrackingEntry = TrackingEntry
     , value   :: Double
     , comment :: String
     } deriving (Show, Eq)
+
+sortedEntries :: Tracking -> [TrackingEntry]
+sortedEntries tracking = sortWith time $ entries tracking
 
 addLog :: Tracking -> TrackingEntry -> Tracking
 addLog tracking entry = tracking { entries = newEntries }

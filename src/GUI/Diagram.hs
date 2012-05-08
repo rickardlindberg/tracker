@@ -57,7 +57,7 @@ renderScreen tracking mousePos w h = do
     -- Data points
     let toX time  = ox + tw * timePercent tracking time
     let toY value = oy - th * valuePercent tracking value
-    let points = map (\entry -> (entry, toX $ time entry, toY $ value entry)) (entries tracking)
+    let points = map (\entry -> (entry, toX $ time entry, toY $ value entry)) (sortedEntries tracking)
     let closest = findClosestEntry points mousePos
     -- Line between points
     setSourceRGBA 0 0 0 0.5
