@@ -43,3 +43,8 @@ parseTracking str =
             newline
             return rest
         nonSpace = many (noneOf " ")
+
+parseMaybeDouble :: String -> Maybe Double
+parseMaybeDouble str = case reads str of
+                           [(d, "")] -> Just d
+                           _         -> Nothing

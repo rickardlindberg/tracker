@@ -41,3 +41,11 @@ main = hspecX $ do
 
         prop "roundtrip returns the same" $
             \tracking -> parseTracking (formatTracking tracking) == Just tracking
+
+        describe "parsing of doubles" $ do
+
+            it "can succeed" $
+                parseMaybeDouble "1.34" @?= Just 1.34
+
+            it "can fail" $
+                parseMaybeDouble "4h" @?= Nothing

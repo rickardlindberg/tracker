@@ -4,6 +4,7 @@ import Control.Monad
 import Graphics.UI.Gtk
 import LogTime
 import Tracking
+import Tracking.Persistence
 
 data LogEntryDialog = LogEntryDialog
     { dialog       :: Dialog
@@ -13,6 +14,7 @@ data LogEntryDialog = LogEntryDialog
 
 initLogEntryDialog :: LogEntryDialog -> (TrackingEntry -> IO ()) -> IO (IO ())
 initLogEntryDialog x saveLog = do
+    (valueSpin x `onEditableChanged` validateNumber x)
     let runDialog = do
         beforeDialogOpened x
         response <- dialogRun (dialog x)
@@ -23,6 +25,13 @@ initLogEntryDialog x saveLog = do
             saveLog (TrackingEntry time value comment)
         widgetHide (dialog x)
     return runDialog
+
+validateNumber :: LogEntryDialog -> IO ()
+validateNumber x = do
+    text <- entryGetText (valueSpin x)
+    case parseMaybeDouble text of
+        Just d -> widgetRestoreBase (valueSpin x) StateNormal
+        _      -> widgetModifyBase  (valueSpin x) StateNormal (Color 65535 35535 35535)
 
 beforeDialogOpened :: LogEntryDialog -> IO ()
 beforeDialogOpened x = do
